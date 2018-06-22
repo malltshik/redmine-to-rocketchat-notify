@@ -24,9 +24,9 @@ class RedmineClient(restTemplateBuilder: RestTemplateBuilder) {
     val restTemplate: RestTemplate = restTemplateBuilder.requestFactory {
         val requestFactory = HttpComponentsClientHttpRequestFactory()
         try {
-            val acceptingTrustStrategy = TrustStrategy { chain: Array<out java.security.cert.X509Certificate>?,
-                                                         authType: String ->
-                true
+            val acceptingTrustStrategy = TrustStrategy {
+                chain: Array<out java.security.cert.X509Certificate>?,
+                authType: String -> true
             }
             val sslContext = org.apache.http.ssl.SSLContexts.custom()
                     .loadTrustMaterial(null, acceptingTrustStrategy)
@@ -39,6 +39,7 @@ class RedmineClient(restTemplateBuilder: RestTemplateBuilder) {
         requestFactory
     }.build()
 
+    // TODO fetch all users with bunch by bunch with offset parameter
     fun fetchUsers(): Array<User> {
         val body = this.restTemplate.getForEntity("${address}/users.json?key=${token}", UsersMessage::class.java).body
         return body?.users ?: emptyArray<User>()
