@@ -6,8 +6,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.exchange
-import ru.tecforce.worktime.persistance.entities.User
 import ru.tecforce.worktime.properties.RocketChatProperties
 
 @Component
@@ -18,7 +16,7 @@ class RocketChatClient(private val props: RocketChatProperties,
     private val restTemplate: RestTemplate = restTemplateBuilder.build()
     private var credential: CredentialResponseData? = null
 
-    fun sendMessage(user: User, message: String) {
+    fun sendMessage(user: RedmineUser, message: String) {
         if (this.credential == null || !isLoggined()) login()
         restTemplate.exchange("$API/chat.postMessage",
                 HttpMethod.POST,
@@ -29,7 +27,7 @@ class RocketChatClient(private val props: RocketChatProperties,
     private fun headers(): HttpHeaders {
         return HttpHeaders().also {
             it.add("X-Auth-Token", this.credential?.authToken)
-            it.add("X-User-Id", this.credential?.userId)
+            it.add("X-RedmineUser-Id", this.credential?.userId)
         }
     }
 
