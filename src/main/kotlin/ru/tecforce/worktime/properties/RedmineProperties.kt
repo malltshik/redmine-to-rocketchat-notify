@@ -1,4 +1,4 @@
-package ru.tecforce.worktime
+package ru.tecforce.worktime.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.validation.annotation.Validated
@@ -15,7 +15,7 @@ class RedmineProperties {
     @NotEmpty(message = "You should have set redmine address property to application.properties")
     @Pattern(regexp = "^(http|https)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]",
             message = "Address should pass the URL regexp pattern")
-    lateinit var address:String
+    lateinit var address: String
 
 
     /**
@@ -23,11 +23,6 @@ class RedmineProperties {
      */
     @NotEmpty(message = "You should have set redmine API token property to application.properties")
     @Pattern(regexp = "(.*){40,}", message = "The API key is not valid")
-    lateinit var token:String
-
-
-
-
-
+    lateinit var token: String
 
 }
