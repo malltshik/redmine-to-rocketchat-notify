@@ -40,6 +40,7 @@ repositories {
 }
 
 jar() {
+	delete "src/main/resources/static"
 	copy {
 		from "../frontend/build"
 		into "src/main/resources/static"
