@@ -1,0 +1,14 @@
+plugins {
+    id "com.moowork.node" version "1.1.1"
+}
+
+apply plugin: 'base'
+version '0.0.1'
+
+node {
+    version = '8.11.3'
+    download = true
+}
+
+build.dependsOn(npm_install)
+build.dependsOn(npm_run_build)
