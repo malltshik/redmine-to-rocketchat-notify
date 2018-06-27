@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import './App.css';
+import Header from "./header/Header";
+import EmpList from "./employees/EmpList";
 
 class App extends Component {
 
@@ -16,10 +17,8 @@ class App extends Component {
     render() {
         return(
             <div>
-                <label htmlFor="name">Type your name:</label>
-                <input type="text" id="name" onChange={this.onChangeInput}/>
-                <br/>
-                <h1>Hello { this.state.name || "World" }!</h1>
+                <Header />
+                <EmpList />
             </div>
         );
     }
