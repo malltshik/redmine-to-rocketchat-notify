@@ -24,6 +24,7 @@ class Header extends Component {
             <AppBar position="sticky" color="default">
                 <Toolbar>
                     <img src={Logo} alt="Logo" style={{paddingRight: "20px", width: "50px"}}/>
+                    {/*TODO search*/}
                     <TextField disabled={true} onChange={this.props.onSearch} className={classes.flex}
                                placeholder="// TODO Search" margin="none"/>
                 </Toolbar>

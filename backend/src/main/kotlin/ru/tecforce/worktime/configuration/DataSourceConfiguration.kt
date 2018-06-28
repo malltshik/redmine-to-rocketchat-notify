@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import ru.tecforce.worktime.properties.DatabaseProperties
 
+// TODO disable overriding database file every single start
 @Configuration
 class DataSourceConfiguration(private val props: DatabaseProperties) {
 
