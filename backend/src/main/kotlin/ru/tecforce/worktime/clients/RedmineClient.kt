@@ -91,7 +91,7 @@ class RedmineClient(private val props: RedmineProperties, private val restTempla
 }
 
 data class RedmineUser(val id: Long, val login: String, val firstname: String, val lastname: String, val mail: String)
-data class Worklog(val id: Long, val hours: Float, val comments: String,
+data class Worklog(val id: Long, val hours: Double, val comments: String,
                    @JsonProperty("spent_on")
                    @DateTimeFormat(pattern = "YYYY-mm-dd")
                    val spentOn: Date)

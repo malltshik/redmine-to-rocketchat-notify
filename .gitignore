@@ -22,7 +22,6 @@ application-local.properties
 
 ### NetBeans ###
 /nbproject/private/
-/build/
 /nbbuild/
 /dist/
 /nbdist/

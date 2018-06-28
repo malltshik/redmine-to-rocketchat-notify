@@ -14,23 +14,21 @@ class NotificationService(
         private val redmineClient: RedmineClient,
         private val rocketChatClient: RocketChatClient) {
 
-    @Scheduled(cron = "0 0 17 * * MON-FRI")
+//    @Scheduled(cron = "0 0 17 * * MON-FRI")
+    @Scheduled(fixedDelay = 10000000)
     fun notifyUsers() {
         employeeService.findAll().forEach { user ->
-            if (checkConditions(user)) {
-                launch { notify(user) }
+            val logged = redmineClient.fetchWorklogs(user.redmineId, Date()).map { it.hours }.sum()
+            if (user.notificationEnable.and(logged < user.requiredTimeToLog)) {
+                launch { notify(user, logged) }
             }
         }
     }
 
-    private fun checkConditions(user: Employee): Boolean {
-        return (redmineClient.fetchWorklogs(user.redmineId, Date()).map { it.hours }.sum() < 8.0)
-                .and(user.notificationEnable)
-    }
-
-    private suspend fun notify(user: Employee) {
+    private suspend fun notify(user: Employee, logged: Double) {
         rocketChatClient.sendMessage(user, "На ${Date()} у пользователя ${user.username} " +
-                "списано недостаточное колличество времени"
+                "списано недостаточное колличество времени! \n" +
+                "Списано: $logged из ${user.requiredTimeToLog}"
         )
     }
 

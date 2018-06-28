@@ -3,6 +3,7 @@ package ru.tecforce.worktime.services
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ru.tecforce.worktime.clients.RedmineClient
+import ru.tecforce.worktime.exceptions.NotFoundException
 import ru.tecforce.worktime.persistance.entities.Employee
 import ru.tecforce.worktime.persistance.repositories.EmployeeRepository
 
@@ -18,10 +19,22 @@ class EmployeeService(
     fun syncRedmineUsers() {
         redmineClient.fetchUsers().forEach { user ->
             val emp = employeeRepository.findByUsername(user.login)
-            employeeRepository.save(Employee(emp?.id, user.id, user.login, user.firstname, user.lastname))
+            if (emp == null) employeeRepository.save(Employee(user))
+            else employeeRepository.save(emp.also {
+                it.firstName = user.firstname
+                it.lastName = user.lastname
+                it.username = user.login
+            })
         }
     }
 
     fun findAll(): MutableIterable<Employee> = employeeRepository.findAll()
+    fun findOne(id: Long): Employee = employeeRepository.findById(id).orElseThrow {
+        NotFoundException("Employee with ID: $id not found!")
+    }
+
+    fun userToggleNotify(id: Long): Employee = employeeRepository.save(findOne(id).also {
+        it.notificationEnable = !it.notificationEnable
+    })
 
 }

@@ -9,6 +9,7 @@ dist/# See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # production
 /build
+/.gradle
 
 # misc
 .DS_Store

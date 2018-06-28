@@ -1,5 +1,6 @@
 package ru.tecforce.worktime.persistance.entities
 
+import ru.tecforce.worktime.clients.RedmineUser
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -13,8 +14,11 @@ data class Employee(
         val id: Long? = null,
         val redmineId: Long,
         @Column(unique = true)
-        val username: String,
-        val firstName: String? = null,
-        val lastName: String? = null,
-        val notificationEnable: Boolean = false
-)
+        var username: String,
+        var firstName: String? = null,
+        var lastName: String? = null,
+        var notificationEnable: Boolean = false,
+        var requiredTimeToLog: Double = 8.0
+) {
+        constructor(ru: RedmineUser) : this(null, ru.id, ru.login, ru.firstname, ru.lastname)
+}
