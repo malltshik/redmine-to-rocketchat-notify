@@ -18,19 +18,24 @@ class EmployeeService(
     @Scheduled(fixedDelay = 1000 * 3600)
     fun syncRedmineUsers() {
         redmineClient.fetchUsers().forEach { user ->
-            val emp = employeeRepository.findByUsername(user.login)
-            if (emp == null) employeeRepository.save(Employee(user))
-            else employeeRepository.save(emp.also {
-                it.firstName = user.firstname
-                it.lastName = user.lastname
-                it.username = user.login
-            })
+            employeeRepository.findByUsername(user.login).map { employee ->
+                employeeRepository.save(employee.also {
+                    it.firstName = user.firstname
+                    it.lastName = user.lastname
+                    it.username = user.login
+                })
+            }.orElseGet {
+                employeeRepository.save(Employee(user))
+            }
         }
     }
 
-    fun findAll(): MutableIterable<Employee> = employeeRepository.findAll()
+    fun findAll(): MutableList<Employee> = employeeRepository.findAll().toMutableList()
     fun findOne(id: Long): Employee = employeeRepository.findById(id).orElseThrow {
         NotFoundException("Employee with ID: $id not found!")
+    }
+    fun findByUsername(username: String): Employee = employeeRepository.findByUsername(username).orElseThrow {
+        NotFoundException("Employee with username '$username' not found!")
     }
 
     fun userToggleNotify(id: Long): Employee = employeeRepository.save(findOne(id).also {

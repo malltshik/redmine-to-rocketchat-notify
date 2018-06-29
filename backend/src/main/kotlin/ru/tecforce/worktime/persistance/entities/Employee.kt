@@ -1,6 +1,7 @@
 package ru.tecforce.worktime.persistance.entities
 
 import ru.tecforce.worktime.clients.RedmineUser
+import java.util.function.Consumer
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -11,7 +12,7 @@ import javax.persistence.Id
 data class Employee(
         @Id
         @GeneratedValue(strategy = SEQUENCE)
-        val id: Long? = null,
+        var id: Long? = null,
         val redmineId: Long,
         @Column(unique = true)
         var username: String,
@@ -21,4 +22,9 @@ data class Employee(
         var requiredTimeToLog: Double = 8.0
 ) {
         constructor(ru: RedmineUser) : this(null, ru.id, ru.login, ru.firstname, ru.lastname)
+
+        fun edit(f: Consumer<Employee>): Employee {
+                f.accept(this)
+                return this
+        }
 }
