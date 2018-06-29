@@ -37,6 +37,15 @@ import static org.mockito.Mockito.when;
 @Import(EmployeeService.class)
 public class EmployeeServiceTest {
 
+    @Autowired
+    private EmployeeService employeeService;
+
+    @MockBean
+    private EmployeeRepository employeeRepository;
+
+    @MockBean
+    private RedmineClient redmineClient;
+
     private final static RedmineUser RMUSER = new RedmineUser(42L, "username", "firstname", "lastname", "mail");
 
     private final static List<Employee> EMPLOYEES = asList(
@@ -47,14 +56,6 @@ public class EmployeeServiceTest {
 
     private ArgumentCaptor<Employee> employeeCaptor = ArgumentCaptor.forClass(Employee.class);
 
-    @Autowired
-    private EmployeeService employeeService;
-
-    @MockBean
-    private EmployeeRepository employeeRepository;
-
-    @MockBean
-    private RedmineClient redmineClient;
 
     @Before
     public void before() {
