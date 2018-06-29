@@ -17,6 +17,7 @@ class RocketChatClient(private val props: RocketChatProperties,
     private val restTemplate: RestTemplate = restTemplateBuilder.build()
     private var credential: CredentialResponseData? = null
 
+    // TODO fix org.springframework.web.client.HttpClientErrorException: 401 Unauthorized
     fun sendMessage(user: Employee, message: String) {
         if (this.credential == null || !isLoggined()) login()
         restTemplate.exchange("$API/chat.postMessage",

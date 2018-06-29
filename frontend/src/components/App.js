@@ -7,35 +7,36 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {query: "", employees: []};
-        this.filter.bind(this)
+        this.state = {query: "", employees: [], filtred: []};
     }
 
     onSearch(event) {
-        this.setState({query: event.target.value})
+        const {value} = event.target;
+        this.setState({
+            query: value,
+            filtred: this.state.employees.filter(
+                function (item) {
+                    if (value) return (
+                        item.username.toLowerCase().indexOf(value) !== -1 ||
+                        item.firstName.toLowerCase().indexOf(value) !== -1 ||
+                        item.lastName.toLowerCase().indexOf(value) !== -1
+                    );
+                    else return true
+                })
+        })
     };
 
-    handleToggle(model, event){
+
+    handleToggle(model) {
         rest.get(`/users/${model.id}/toggleNotify`)
-            .then(resp => {model = resp.data})
+            .then(this.state.employees[this.state.employees.findIndex(e => e.id === model.id)] = model)
             .catch(error => console.error("Unable to toggle notification setting on/off", error));
     };
-
-    filter(employees, query) {
-        return employees.filter(function (item) {
-            if (query) return (
-                item.username.toLowerCase().indexOf(query) !== -1 ||
-                item.firstName.toLowerCase().indexOf(query) !== -1 ||
-                item.lastName.toLowerCase().indexOf(query) !== -1
-            );
-            else return true
-        });
-    }
 
     componentWillMount() {
         rest.get("/users/")
             .then(resp => {
-                this.setState({ employees: resp.data });
+                this.setState({employees: resp.data, filtred: resp.data});
             }).catch(resp => {
             this.setState({employees: [], loaded: false, message: resp.data.message})
         });
@@ -45,7 +46,7 @@ class App extends Component {
         return (
             <div>
                 <Header onSearch={this.onSearch.bind(this)}/>
-                <Employees employees={this.filter(this.state.employees, this.state.query)}
+                <Employees employees={this.state.filtred}
                            onToggleNotification={this.handleToggle.bind(this)}/>
             </div>
         );

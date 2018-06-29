@@ -13,8 +13,8 @@ class Employees extends Component {
         return (
             <div>
                 <List>
-                    {employees.map((model, index) => (
-                        <ListItem key={index} dense button>
+                    {employees.map((model) => (
+                        <ListItem key={model.id} dense button>
                             <Gravatar email={model.username + "@tecforce.ru"} rating="pg" default="identicon"/>
                             <Employee model={model}/>
                             <ListItemSecondaryAction>
