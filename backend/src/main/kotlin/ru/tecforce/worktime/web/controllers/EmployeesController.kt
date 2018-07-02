@@ -1,15 +1,12 @@
 package ru.tecforce.worktime.web.controllers
 
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.tecforce.worktime.persistance.entities.Employee
 import ru.tecforce.worktime.services.EmployeeService
 
 @RestController
 @CrossOrigin(origins = ["http://localhost:3000"])
-@RequestMapping("/api/users")
+@RequestMapping("/api/employees")
 class EmployeesController(private val employeeService: EmployeeService) {
 
     @RequestMapping("/")
@@ -19,6 +16,11 @@ class EmployeesController(private val employeeService: EmployeeService) {
     fun user(@PathVariable id: Long): Employee = employeeService.findOne(id)
 
     @RequestMapping("/{id}/toggleNotify/")
-    fun userToggleNotify(@PathVariable id: Long): Employee = employeeService.userToggleNotify(id)
+    fun userToggleNotify(@PathVariable id: Long): Employee = employeeService.toggleNotify(id)
+
+    @RequestMapping("/{id}/setRequiredTimeToLog/")
+    fun setRequiredTimeToLog(@PathVariable id: Long, @RequestParam("timeToLog") timeToLog: Double): Employee {
+        return employeeService.setRequiredTimeToLog(id, timeToLog)
+    }
 
 }

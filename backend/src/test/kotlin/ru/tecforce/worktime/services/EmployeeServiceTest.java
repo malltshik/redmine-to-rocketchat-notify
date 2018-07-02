@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.tecforce.worktime.clients.RedmineClient;
 import ru.tecforce.worktime.clients.RedmineUser;
+import ru.tecforce.worktime.exceptions.ConflictException;
 import ru.tecforce.worktime.exceptions.NotFoundException;
 import ru.tecforce.worktime.persistance.entities.Employee;
 import ru.tecforce.worktime.persistance.repositories.EmployeeRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -28,7 +28,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,9 +48,9 @@ public class EmployeeServiceTest {
     private final static RedmineUser RMUSER = new RedmineUser(42L, "username", "firstname", "lastname", "mail");
 
     private final static List<Employee> EMPLOYEES = asList(
-            new Employee(RMUSER).edit(x -> { x.setId(1L); x.setUsername("user1"); }),
-            new Employee(RMUSER).edit(x -> { x.setId(2L); x.setUsername("user2"); }),
-            new Employee(RMUSER).edit(x -> { x.setId(3L); x.setUsername("user3"); })
+            new Employee(RMUSER).edit(x -> { x.setId(1L); x.setUsername("employee1"); }),
+            new Employee(RMUSER).edit(x -> { x.setId(2L); x.setUsername("employee2"); }),
+            new Employee(RMUSER).edit(x -> { x.setId(3L); x.setUsername("employee3"); })
     );
 
     private ArgumentCaptor<Employee> employeeCaptor = ArgumentCaptor.forClass(Employee.class);
@@ -110,10 +109,10 @@ public class EmployeeServiceTest {
 
     @Test
     public void findByUsernameTest() {
-        assertEquals(employeeService.findByUsername("user1").getUsername(), "user1");
-        assertEquals(employeeService.findByUsername("user3").getUsername(), "user3");
+        assertEquals(employeeService.findOne("employee1").getUsername(), "employee1");
+        assertEquals(employeeService.findOne("employee3").getUsername(), "employee3");
         try {
-            employeeService.findByUsername("unknown");
+            employeeService.findOne("unknown");
         } catch (Exception e) {
             assertEquals(e.getMessage(), "Employee with username 'unknown' not found!");
             assertEquals(e.getClass(), NotFoundException.class);
@@ -121,16 +120,31 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void userToggleNotifyTest() {
-        Employee employee = employeeService.userToggleNotify(1L);
+    public void toggleNotifyTest() {
+        Employee employee = employeeService.toggleNotify(1L);
         assertEquals(employee.getId(), (Long) 1L);
-        assertEquals(employee.getUsername(), "user1");
+        assertEquals(employee.getUsername(), "employee1");
         assertEquals(employee.getNotificationEnable(), true);
 
-        employee = employeeService.userToggleNotify(1L);
+        employee = employeeService.toggleNotify(1L);
         assertEquals(employee.getId(), (Long) 1L);
-        assertEquals(employee.getUsername(), "user1");
+        assertEquals(employee.getUsername(), "employee1");
         assertEquals(employee.getNotificationEnable(), false);
+    }
+
+    @Test
+    public void setUpRequirementTimeToLog() {
+        Employee employee = employeeService.setRequiredTimeToLog(1L, 7.0);
+        assertEquals(employee.getId(), (Long) 1L);
+        assertEquals(employee.getUsername(), "employee1");
+        assertEquals(employee.getRequiredTimeToLog(), 7.0);
+        try {
+            employeeService.setRequiredTimeToLog(1L, 9.0);
+        } catch (Exception e) {
+            assertEquals(e.getMessage(), "Required time should have bean more then 0 and less 8 hours for day");
+            assertEquals(e.getClass(), ConflictException.class);
+        }
+
     }
 
 }

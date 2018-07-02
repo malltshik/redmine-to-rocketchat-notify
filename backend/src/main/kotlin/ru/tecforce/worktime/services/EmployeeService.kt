@@ -3,6 +3,7 @@ package ru.tecforce.worktime.services
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ru.tecforce.worktime.clients.RedmineClient
+import ru.tecforce.worktime.exceptions.ConflictException
 import ru.tecforce.worktime.exceptions.NotFoundException
 import ru.tecforce.worktime.persistance.entities.Employee
 import ru.tecforce.worktime.persistance.repositories.EmployeeRepository
@@ -34,12 +35,19 @@ class EmployeeService(
     fun findOne(id: Long): Employee = employeeRepository.findById(id).orElseThrow {
         NotFoundException("Employee with ID: $id not found!")
     }
-    fun findByUsername(username: String): Employee = employeeRepository.findByUsername(username).orElseThrow {
+    fun findOne(username: String): Employee = employeeRepository.findByUsername(username).orElseThrow {
         NotFoundException("Employee with username '$username' not found!")
     }
 
-    fun userToggleNotify(id: Long): Employee = employeeRepository.save(findOne(id).also {
+    fun toggleNotify(id: Long): Employee = employeeRepository.save(findOne(id).also {
         it.notificationEnable = !it.notificationEnable
     })
+
+    fun setRequiredTimeToLog(id: Long, time: Double): Employee {
+        if(time > 0 && time < 8.0) return employeeRepository.save(findOne(id).also {
+            it.requiredTimeToLog = time
+        })
+        else throw ConflictException("Required time should have bean more then 0 and less 8 hours for day")
+    }
 
 }

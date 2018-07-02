@@ -28,13 +28,13 @@ class App extends Component {
 
 
     handleToggle(model) {
-        rest.get(`/users/${model.id}/toggleNotify/`)
+        rest.get(`/employees/${model.id}/toggleNotify/`)
             .then(this.state.employees[this.state.employees.findIndex(e => e.id === model.id)] = model)
             .catch(error => console.error("Unable to toggle notification setting on/off", error));
     };
 
     componentWillMount() {
-        rest.get("/users/")
+        rest.get("/employees/")
             .then(resp => {
                 this.setState({employees: resp.data, filtred: resp.data});
             }).catch(resp => {
