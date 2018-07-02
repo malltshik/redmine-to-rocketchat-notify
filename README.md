@@ -25,7 +25,6 @@ Before run application you have to declare couple of properties.
 - run application via `java -jar`
 Do not forget! You have to declare properties. Set them to `application.properties`
 file in the same directory as `.jar` file. 
-
 ```bash
 vim application.properties
 cp backend/build/libs/backend-${version}-SNAPSHOT.jar ./
