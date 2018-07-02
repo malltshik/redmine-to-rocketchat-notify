@@ -14,8 +14,7 @@ class NotificationService(
         private val redmineClient: RedmineClient,
         private val rocketChatClient: RocketChatClient) {
 
-//    @Scheduled(cron = "0 0 17 * * MON-FRI")
-    @Scheduled(fixedDelay = 20000)
+    @Scheduled(cron = "0 0 17 * * MON-FRI")
     fun notifyUsers() {
         employeeService.findAll().forEach { user ->
             val logged = redmineClient.fetchWorklogs(user.redmineId, Date()).map { it.hours }.sum()
