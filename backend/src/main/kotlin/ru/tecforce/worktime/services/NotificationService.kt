@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import ru.tecforce.worktime.clients.RedmineClient
 import ru.tecforce.worktime.clients.RocketChatClient
 import ru.tecforce.worktime.persistance.entities.Employee
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Service
@@ -25,10 +26,15 @@ class NotificationService(
     }
 
     private suspend fun notify(user: Employee, logged: Double) {
-        rocketChatClient.sendMessage(user, "На ${Date()} у пользователя ${user.username} " +
-                "списано недостаточное колличество времени! \n" +
-                "Списано: $logged из ${user.requiredTimeToLog}"
+        rocketChatClient.sendMessage(user, ":alarm_clock: " +
+                "На `${Date().toString("dd.MM.YYYY")}` у пользователя `${user.username}` " +
+                "списано недостаточное колличество времени! " +
+                "Списано: `$logged` из `${user.requiredTimeToLog}`"
         )
+    }
+
+    fun Date.toString(pattern: String): String {
+        return SimpleDateFormat(pattern).format(this)
     }
 
 }
