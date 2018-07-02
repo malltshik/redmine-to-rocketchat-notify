@@ -44,7 +44,7 @@ class EmployeeService(
     })
 
     fun setRequiredTimeToLog(id: Long, time: Double): Employee {
-        if(time > 0 && time < 8.0) return employeeRepository.save(findOne(id).also {
+        if(time in 0.0..8.0) return employeeRepository.save(findOne(id).also {
             it.requiredTimeToLog = time
         })
         else throw ConflictException("Required time should have bean more then 0 and less 8 hours for day")

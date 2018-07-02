@@ -23,22 +23,28 @@ class App extends Component {
                     );
                     else return true
                 })
-        })
+        });
     };
 
 
     handleToggle(model) {
         rest.get(`/employees/${model.id}/toggleNotify/`)
-            .then(this.state.employees[this.state.employees.findIndex(e => e.id === model.id)] = model)
+            .then(resp => this.state.employees[this.state.employees.findIndex(e => e.id === model.id)] = resp)
             .catch(error => console.error("Unable to toggle notification setting on/off", error));
     };
+
+    handleRequiredTimeChange(model, event) {
+        rest.get(`/employees/${model.id}/setRequiredTimeToLog/?timeToLog=${event.target.value}`)
+            .then(resp => this.state.employees[this.state.employees.findIndex(e => e.id === model.id)] = resp)
+            .catch(error => console.error("Unable to change required time to log", error));
+    }
 
     componentWillMount() {
         rest.get("/employees/")
             .then(resp => {
                 this.setState({employees: resp.data, filtred: resp.data});
             }).catch(resp => {
-            this.setState({employees: [], loaded: false, message: resp.data.message})
+            this.setState({employees: [], filtred: [], loaded: false, message: resp.data.message})
         });
     }
 
@@ -47,7 +53,8 @@ class App extends Component {
             <div>
                 <Header onSearch={this.onSearch.bind(this)}/>
                 <Employees employees={this.state.filtred}
-                           onToggleNotification={this.handleToggle.bind(this)}/>
+                           onToggleNotification={this.handleToggle.bind(this)}
+                           onRequiredTimeChange={this.handleRequiredTimeChange.bind(this)}/>
             </div>
         );
     }
