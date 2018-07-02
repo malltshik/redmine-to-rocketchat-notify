@@ -28,7 +28,7 @@ class App extends Component {
 
 
     handleToggle(model) {
-        rest.get(`/users/${model.id}/toggleNotify`)
+        rest.get(`/users/${model.id}/toggleNotify/`)
             .then(this.state.employees[this.state.employees.findIndex(e => e.id === model.id)] = model)
             .catch(error => console.error("Unable to toggle notification setting on/off", error));
     };

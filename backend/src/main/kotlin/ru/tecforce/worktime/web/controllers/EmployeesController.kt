@@ -18,7 +18,7 @@ class EmployeesController(private val employeeService: EmployeeService) {
     @RequestMapping("/{id}/")
     fun user(@PathVariable id: Long): Employee = employeeService.findOne(id)
 
-    @RequestMapping("/{id}/toggleNotify")
+    @RequestMapping("/{id}/toggleNotify/")
     fun userToggleNotify(@PathVariable id: Long): Employee = employeeService.userToggleNotify(id)
 
 }
