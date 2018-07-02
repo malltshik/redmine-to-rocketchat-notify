@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import Header from "./header/Header";
 import Employees from "./employees/Employees"
 import rest from "../services/rest"
+import Search from "./search/Search";
 
 class App extends Component {
 
@@ -51,7 +51,7 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Header onSearch={this.onSearch.bind(this)}/>
+                <Search onSearch={this.onSearch.bind(this)}/>
                 <Employees employees={this.state.filtred}
                            onToggleNotification={this.handleToggle.bind(this)}
                            onRequiredTimeChange={this.handleRequiredTimeChange.bind(this)}/>
